@@ -29,6 +29,31 @@ The project further promotes multidisciplinary collaboration and knowledge excha
 
 ---
 
+## WDI VISUALIZATION APP
+
+An interactive Streamlit app visualizes the **Wetland Degradation Index (WDI)** for the Nylsvley region during the October 2019 heatwave and forest fire case study. The app displays daily WDI spatial maps from 15–30 October 2019.
+
+### Run locally
+
+```bash
+pip install -r requirements.txt
+streamlit run app.py
+```
+
+### Deploy on Streamlit Community Cloud (free)
+
+1. Go to [share.streamlit.io](https://share.streamlit.io)
+2. Sign in with your GitHub account
+3. Click **"New app"**
+4. Select repository: `msovara/neoss-csir-chpc`
+5. Branch: `main`
+6. Main file path: `app.py`
+7. Click **"Deploy"**
+
+Your app will be live at `https://<your-app-name>.streamlit.app` within a few minutes.
+
+---
+
 ## REPOSITORY
 
 **URL:** [https://github.com/msovara/neoss-csir-chpc](https://github.com/msovara/neoss-csir-chpc)
