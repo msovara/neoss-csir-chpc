@@ -44,6 +44,9 @@ st.markdown("""
     .stImage img {
         border-radius: 8px;
         box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+        max-width: 900px !important;
+        width: auto !important;
+        height: auto !important;
     }
     [data-testid="stSidebar"] {
         background-color: #16213e;
