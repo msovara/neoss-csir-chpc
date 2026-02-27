@@ -79,6 +79,12 @@ def get_exceedance_path(date_str: str):
     return path if path.exists() else None
 
 
+def get_fwi_path(date_str: str):
+    """Get Fire Weather Index map path for a given date."""
+    path = IMAGES_DIR / f"FWI_baseline_{date_str}.png"
+    return path if path.exists() else None
+
+
 def main():
     st.markdown('<p class="main-header">🌍 NEOSS Climate Risk</p>', unsafe_allow_html=True)
     st.markdown(
@@ -87,7 +93,7 @@ def main():
     )
 
     # Tabs
-    tab_wdi, tab_exceedance = st.tabs(["📊 Nylsvley WDI", "🔴 Exceedance Maps"])
+    tab_wdi, tab_exceedance, tab_fwi = st.tabs(["📊 Nylsvley WDI", "🔴 Exceedance Maps", "🔥 Fire Weather Index"])
 
     with tab_wdi:
         st.markdown("**Wetland Degradation Index (WDI)** — Nylsvley region")
@@ -137,6 +143,32 @@ def main():
             st.caption(
                 "Exceedance maps show locations where certain environmental or weather thresholds "
                 "were surpassed. Red dots indicate areas of elevated risk (e.g., heatwave, fire risk)."
+            )
+
+    with tab_fwi:
+        st.markdown("**Fire Weather Index (FWI)** — Southern Africa region")
+        st.caption("Fire risk indicator (0–300 scale: white = low, red/black = high)")
+        avail_fwi = [d for d in AVAILABLE_DATES if get_fwi_path(d)]
+        if not avail_fwi:
+            avail_fwi = AVAILABLE_DATES
+        fwi_date = st.selectbox(
+            "Select date",
+            options=avail_fwi,
+            index=0,
+            format_func=lambda x: datetime.strptime(x, DATE_FORMAT).strftime("%d %B %Y"),
+            key="fwi_date",
+        )
+        fwi_path = get_fwi_path(fwi_date)
+        if fwi_path and fwi_path.exists():
+            st.subheader(f"Fire Weather Index (FWI) {fwi_date}")
+            st.image(str(fwi_path), use_container_width=True)
+        else:
+            st.warning(f"FWI map not found for {fwi_date}.")
+        with st.expander("About FWI"):
+            st.caption(
+                "The Fire Weather Index (FWI) indicates fire danger based on weather conditions. "
+                "Values range from 0 (low risk) to 300 (extreme risk). "
+                "Higher values (orange/red/black) indicate elevated fire weather conditions."
             )
 
     with st.sidebar:
