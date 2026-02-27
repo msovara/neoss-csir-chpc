@@ -53,6 +53,12 @@ AVAILABLE_DATES = [
     "2019-10-30",
 ]
 
+# Exceedance map dates (Oct 15-23, 2019)
+EXCEEDANCE_DATES = [
+    "2019-10-15", "2019-10-16", "2019-10-17", "2019-10-18", "2019-10-19",
+    "2019-10-20", "2019-10-21", "2019-10-22", "2019-10-23",
+]
+
 
 def get_image_path(date_str: str):
     """Get image path for a given date. Supports multiple naming conventions."""
@@ -67,46 +73,75 @@ def get_image_path(date_str: str):
     return None
 
 
+def get_exceedance_path(date_str: str):
+    """Get exceedance map path for a given date."""
+    path = IMAGES_DIR / f"exceedance_{date_str}.png"
+    return path if path.exists() else None
+
+
 def main():
     st.markdown('<p class="main-header">🌍 NEOSS Climate Risk</p>', unsafe_allow_html=True)
     st.markdown(
-        '<p class="sub-header">Nylsvley Wetland Degradation Index (WDI) — October 2019 heatwave & forest fire case study</p>',
+        '<p class="sub-header">October 2019 heatwave & forest fire case study</p>',
         unsafe_allow_html=True,
     )
 
-    # Sidebar
-    with st.sidebar:
-        st.header("📅 Date Selection")
+    # Tabs
+    tab_wdi, tab_exceedance = st.tabs(["📊 Nylsvley WDI", "🔴 Exceedance Maps"])
+
+    with tab_wdi:
+        st.markdown("**Wetland Degradation Index (WDI)** — Nylsvley region")
         selected_date = st.selectbox(
             "Select date",
             options=AVAILABLE_DATES,
             index=0,
             format_func=lambda x: datetime.strptime(x, DATE_FORMAT).strftime("%d %B %Y"),
+            key="wdi_date",
         )
-        st.divider()
-        st.markdown("**About WDI**")
-        st.caption(
-            "The Wetland Degradation Index indicates water deficit (blue) to surplus (red). "
-            "Values range from -2.0 to 2.0. The black polygon outlines the Nylsvley region."
+        image_path = get_image_path(selected_date)
+        if image_path and image_path.exists():
+            st.subheader(f"Nylsvley - WDI {selected_date}")
+            st.image(str(image_path), use_container_width=True)
+        else:
+            st.warning(
+                f"Image not found for {selected_date}. "
+                "Ensure the `images/` folder contains the WDI figures."
+            )
+        with st.expander("About WDI"):
+            st.caption(
+                "The Wetland Degradation Index indicates water deficit (blue) to surplus (red). "
+                "Values range from -2.0 to 2.0. The black polygon outlines the Nylsvley region."
+            )
+
+    with tab_exceedance:
+        st.markdown("**Exceedance Maps** — Southern Africa region")
+        st.caption("Areas where environmental thresholds were exceeded (red dots)")
+        # Filter to dates we have exceedance images for
+        avail_exceedance = [d for d in EXCEEDANCE_DATES if get_exceedance_path(d)]
+        if not avail_exceedance:
+            avail_exceedance = EXCEEDANCE_DATES
+        exc_date = st.selectbox(
+            "Select date",
+            options=avail_exceedance,
+            index=0,
+            format_func=lambda x: datetime.strptime(x, DATE_FORMAT).strftime("%d %B %Y"),
+            key="exc_date",
         )
+        exc_path = get_exceedance_path(exc_date)
+        if exc_path and exc_path.exists():
+            st.subheader(f"Exceedances at {exc_date}T12:00:00")
+            st.image(str(exc_path), use_container_width=True)
+        else:
+            st.warning(f"Exceedance map not found for {exc_date}.")
+        with st.expander("About Exceedances"):
+            st.caption(
+                "Exceedance maps show locations where certain environmental or weather thresholds "
+                "were surpassed. Red dots indicate areas of elevated risk (e.g., heatwave, fire risk)."
+            )
+
+    with st.sidebar:
         st.divider()
         st.markdown("[View on GitHub](https://github.com/msovara/neoss-csir-chpc)")
-
-    # Main content
-    image_path = get_image_path(selected_date)
-
-    if image_path and image_path.exists():
-        st.subheader(f"Nylsvley - WDI {selected_date}")
-        st.image(str(image_path), use_container_width=True)
-    else:
-        st.warning(
-            f"Image not found for {selected_date}. "
-            "Ensure the `images/` folder contains the WDI figures (e.g. `Nylsvley_WDIwrf_2019-10-15.png`)."
-        )
-        if IMAGES_DIR.exists():
-            st.info(f"Files in images folder: {list(IMAGES_DIR.glob('*.png'))[:5]}...")
-        else:
-            st.info(f"Images directory not found: {IMAGES_DIR}")
 
 
 if __name__ == "__main__":
