@@ -14,29 +14,39 @@ from datetime import datetime
 
 # Page configuration
 st.set_page_config(
-    page_title="NEOSS Climate Risk - Nylsvley WDI",
+    page_title="Risk Mapping Tool for Climate and Environmental Risks",
     page_icon="🌍",
     layout="wide",
     initial_sidebar_state="expanded",
 )
 
-# Custom CSS
+# Custom CSS - darker theme
 st.markdown("""
     <style>
+    .stApp, .main, [data-testid="stAppViewContainer"] {
+        background-color: #1a1a2e;
+    }
+    .stApp > header {
+        background-color: #16213e;
+    }
     .main-header {
-        font-size: 2rem;
+        font-size: 2.75rem;
         font-weight: bold;
-        color: #0e1117;
+        color: #e8e8e8;
         margin-bottom: 0.5rem;
+        letter-spacing: 0.02em;
     }
     .sub-header {
-        font-size: 1rem;
-        color: #808495;
+        font-size: 1.1rem;
+        color: #a0a0b0;
         margin-bottom: 1.5rem;
     }
     .stImage img {
         border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+    }
+    [data-testid="stSidebar"] {
+        background-color: #16213e;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -86,7 +96,7 @@ def get_fwi_path(date_str: str):
 
 
 def main():
-    st.markdown('<p class="main-header">🌍 NEOSS Climate Risk</p>', unsafe_allow_html=True)
+    st.markdown('<p class="main-header">🌍 RISK MAPPING TOOL FOR CLIMATE AND ENVIRONMENTAL RISKS</p>', unsafe_allow_html=True)
     st.markdown(
         '<p class="sub-header">October 2019 heatwave & forest fire case study</p>',
         unsafe_allow_html=True,
