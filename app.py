@@ -30,7 +30,7 @@ st.markdown("""
         background-color: #16213e;
     }
     .main-header {
-        font-size: 8rem;
+        font-size: 10rem;
         font-weight: bold;
         color: #e8e8e8;
         margin-bottom: 0.5rem;
