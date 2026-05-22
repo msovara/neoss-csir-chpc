@@ -61,17 +61,7 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
-### Deploy on Streamlit Community Cloud (free)
 
-1. Go to [share.streamlit.io](https://share.streamlit.io)
-2. Sign in with your GitHub account
-3. Click **"New app"**
-4. Select repository: `msovara/neoss-csir-chpc`
-5. Branch: `main`
-6. Main file path: `app.py`
-7. Click **"Deploy"**
-
-Your app will be live at `https://<your-app-name>.streamlit.app` within a few minutes.
 
 ---
 
