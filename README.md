@@ -29,9 +29,30 @@ The project further promotes multidisciplinary collaboration and knowledge excha
 
 ---
 
-## WDI VISUALIZATION APP
+## HAZARD RISK MAPPING APP
 
-An interactive Streamlit app visualizes the **Wetland Degradation Index (WDI)** for the Nylsvley region during the October 2019 heatwave and forest fire case study. The app displays daily WDI spatial maps from 15–30 October 2019.
+Interactive **Streamlit** dashboard: **Hazard Risk Mapping Tool** for climate and environmental risks in southern Africa.
+
+**Tabs:**
+1. **Case Study (Oct 2019)** — Fire Risk · Wetland Degradation · Heatwave Risk  
+2. **S2S Heatwave Forecast** — weekly initialisation dates  
+3. **S2S Wetland Forecast**  
+4. **S2S Wildfire Forecast**
+
+**Image layout:**
+```
+images/
+  case_study/
+    fire/       fire_risk_YYYY-MM-DDT12.png
+    wetland/    wetland_risk_map_NN_YYYY-MM-DD.png
+    heatwave/   heatwave_risk_YYYY-MM-DDT12.png
+  forecasts/
+    heatwave/   s2s_heatwave_YYYY-MM-DD.png
+    wetland/    s2s_wetland_YYYY-MM-DD.png
+    wildfire/   s2s_wildfire_YYYY-MM-DD.png
+```
+
+Add S2S forecast PNGs under `images/forecasts/` as they become available.
 
 ### Run locally
 
