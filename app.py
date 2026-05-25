@@ -242,6 +242,7 @@ hr { border-color: #21262d; }
 BASE_DIR = Path(__file__).parent
 LOGO_PATH = BASE_DIR / "assets" / "csir_logo.png"
 NICIS_CHPC_LOGO_PATH = BASE_DIR / "assets" / "nicis_chpc_logo.png"
+LIMPOPO_LOGO_PATH = BASE_DIR / "assets" / "limpopo_ledet_logo.png"
 
 FIRE_DIR = BASE_DIR / "images" / "case_study" / "fire"
 WETLAND_DIR = BASE_DIR / "images" / "case_study" / "wetland"
@@ -354,20 +355,25 @@ def legend_chips(chips: list[tuple[str, str]]):
 # ──────────────────────────────────────────────────────────────────────────────
 # HEADER
 # ──────────────────────────────────────────────────────────────────────────────
-header_logos, header_text = st.columns([2, 4], gap="medium")
+header_logos, header_text = st.columns([3, 3], gap="medium")
 
 with header_logos:
-    logo_csir, logo_nicis = st.columns(2, gap="small")
+    logo_csir, logo_nicis, logo_limpopo = st.columns(3, gap="small")
     with logo_csir:
         if LOGO_PATH.exists():
-            st.image(str(LOGO_PATH), width=180)
+            st.image(str(LOGO_PATH), width=140)
         else:
             st.caption("CSIR logo not found")
     with logo_nicis:
         if NICIS_CHPC_LOGO_PATH.exists():
-            st.image(str(NICIS_CHPC_LOGO_PATH), width=180)
+            st.image(str(NICIS_CHPC_LOGO_PATH), width=140)
         else:
             st.caption("NICIS/CHPC logo not found")
+    with logo_limpopo:
+        if LIMPOPO_LOGO_PATH.exists():
+            st.image(str(LIMPOPO_LOGO_PATH), width=160)
+        else:
+            st.caption("Limpopo logo not found")
 
 with header_text:
     st.markdown(
