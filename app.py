@@ -56,19 +56,19 @@ st.markdown(
 
 .neoss-title {
     font-family: 'Syne', sans-serif;
-    font-size: 4.5rem;
+    font-size: 7rem;
     font-weight: 800;
     color: #e6edf3;
     letter-spacing: -0.02em;
-    line-height: 1.1;
-    margin-bottom: 0.4rem;
+    line-height: 1.05;
+    margin-bottom: 0.5rem;
 }
 .neoss-subtitle {
     font-family: 'Inter', sans-serif;
-    font-size: 2rem;
+    font-size: 3.2rem;
     font-weight: 400;
     color: #8b949e;
-    margin-bottom: 0.8rem;
+    margin-bottom: 1rem;
     letter-spacing: 0.04em;
     text-transform: uppercase;
 }
@@ -78,14 +78,14 @@ st.markdown(
     border: 1px solid #2d6a7f;
     color: #56cfe1;
     font-family: 'Inter', sans-serif;
-    font-size: 1.5rem;
+    font-size: 2.4rem;
     font-weight: 600;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    padding: 0.35rem 1.2rem;
+    padding: 0.5rem 1.6rem;
     border-radius: 100px;
-    margin-right: 0.5rem;
-    margin-bottom: 0.75rem;
+    margin-right: 0.6rem;
+    margin-bottom: 1rem;
 }
 .logo-wrap {
     background: #ffffff;
