@@ -78,14 +78,14 @@ st.markdown(
     border: 1px solid #2d6a7f;
     color: #56cfe1;
     font-family: 'Inter', sans-serif;
-    font-size: 2.4rem;
+    font-size: 1.1rem;
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    padding: 0.5rem 1.6rem;
+    padding: 0.3rem 1rem;
     border-radius: 100px;
-    margin-right: 0.6rem;
-    margin-bottom: 1rem;
+    margin-right: 0.5rem;
+    margin-bottom: 0.6rem;
 }
 .logo-wrap {
     background: #ffffff;
