@@ -87,6 +87,19 @@ st.markdown(
     margin-right: 0.4rem;
     margin-bottom: 1rem;
 }
+.logo-wrap {
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    display: inline-block;
+    margin-bottom: 1rem;
+    border: 1px solid #21262d;
+}
+.logo-wrap img {
+    max-height: 56px;
+    width: auto;
+    display: block;
+}
 
 /* ── Tabs ───────────────────────────────────────── */
 [data-testid="stTabs"] [role="tablist"] {
@@ -227,6 +240,7 @@ hr { border-color: #21262d; }
 # PATHS
 # ──────────────────────────────────────────────────────────────────────────────
 BASE_DIR = Path(__file__).parent
+LOGO_PATH = BASE_DIR / "assets" / "csir_logo.png"
 
 FIRE_DIR = BASE_DIR / "images" / "case_study" / "fire"
 WETLAND_DIR = BASE_DIR / "images" / "case_study" / "wetland"
@@ -339,19 +353,29 @@ def legend_chips(chips: list[tuple[str, str]]):
 # ──────────────────────────────────────────────────────────────────────────────
 # HEADER
 # ──────────────────────────────────────────────────────────────────────────────
-st.markdown(
-    """
-    <span class="neoss-badge">NEOSS · CSIR · CHPC</span>
-    <span class="neoss-badge">Southern Africa</span>
-    <span class="neoss-badge">NWP-EO_AI modelling</span>
-    """,
-    unsafe_allow_html=True,
-)
-st.markdown('<p class="neoss-title">🌍 Hazard Risk Mapping Tool</p>', unsafe_allow_html=True)
-st.markdown(
-    '<p class="neoss-subtitle">Environmental & climate risk intelligence for southern Africa</p>',
-    unsafe_allow_html=True,
-)
+header_logo, header_text = st.columns([1, 4], gap="medium")
+
+with header_logo:
+    if LOGO_PATH.exists():
+        st.image(str(LOGO_PATH), width=220)
+    else:
+        st.caption("CSIR logo not found")
+
+with header_text:
+    st.markdown(
+        """
+        <span class="neoss-badge">NEOSS · CSIR · CHPC</span>
+        <span class="neoss-badge">Southern Africa</span>
+        <span class="neoss-badge">NWP-EO_AI modelling</span>
+        """,
+        unsafe_allow_html=True,
+    )
+    st.markdown('<p class="neoss-title">🌍 Hazard Risk Mapping Tool</p>', unsafe_allow_html=True)
+    st.markdown(
+        '<p class="neoss-subtitle">Environmental & climate risk intelligence for southern Africa</p>',
+        unsafe_allow_html=True,
+    )
+
 st.markdown("---")
 
 tab_cs, tab_hw, tab_wl, tab_wf = st.tabs([
