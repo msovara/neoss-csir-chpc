@@ -355,25 +355,21 @@ def legend_chips(chips: list[tuple[str, str]]):
 # ──────────────────────────────────────────────────────────────────────────────
 # HEADER
 # ──────────────────────────────────────────────────────────────────────────────
-header_logos, header_text = st.columns([3, 3], gap="medium")
+header_logos, header_text = st.columns([1, 4], gap="medium")
 
 with header_logos:
-    logo_csir, logo_nicis, logo_limpopo = st.columns(3, gap="small")
-    with logo_csir:
-        if LOGO_PATH.exists():
-            st.image(str(LOGO_PATH), width=140)
-        else:
-            st.caption("CSIR logo not found")
-    with logo_nicis:
-        if NICIS_CHPC_LOGO_PATH.exists():
-            st.image(str(NICIS_CHPC_LOGO_PATH), width=140)
-        else:
-            st.caption("NICIS/CHPC logo not found")
-    with logo_limpopo:
-        if LIMPOPO_LOGO_PATH.exists():
-            st.image(str(LIMPOPO_LOGO_PATH), width=160)
-        else:
-            st.caption("Limpopo logo not found")
+    if LOGO_PATH.exists():
+        st.image(str(LOGO_PATH), width=180)
+    else:
+        st.caption("CSIR logo not found")
+    if NICIS_CHPC_LOGO_PATH.exists():
+        st.image(str(NICIS_CHPC_LOGO_PATH), width=180)
+    else:
+        st.caption("NICIS/CHPC logo not found")
+    if LIMPOPO_LOGO_PATH.exists():
+        st.image(str(LIMPOPO_LOGO_PATH), width=180)
+    else:
+        st.caption("Limpopo logo not found")
 
 with header_text:
     st.markdown(
