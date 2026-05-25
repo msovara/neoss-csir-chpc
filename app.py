@@ -56,7 +56,7 @@ st.markdown(
 
 .neoss-title {
     font-family: 'Syne', sans-serif;
-    font-size: 7rem;
+    font-size: 5rem;
     font-weight: 800;
     color: #e6edf3;
     letter-spacing: -0.02em;
@@ -65,7 +65,7 @@ st.markdown(
 }
 .neoss-subtitle {
     font-family: 'Inter', sans-serif;
-    font-size: 3.2rem;
+    font-size: 2.2rem;
     font-weight: 400;
     color: #8b949e;
     margin-bottom: 1rem;
@@ -264,15 +264,11 @@ def _weekly_dates(start: str, n_weeks: int) -> list[str]:
     return [(base + timedelta(weeks=i)).strftime(DATE_FMT) for i in range(n_weeks)]
 
 
-FIRE_DATES = [f"2019-10-{d:02d}" for d in range(20, 31)]
-
-
 def fire_path(date_str: str) -> Path | None:
     p = FIRE_DIR / f"fire_risk_{date_str}T12.png"
     return p if p.exists() else None
 
 
-WETLAND_DATES = [f"2019-10-{d:02d}" for d in range(15, 30)]
 _WETLAND_NN = {f"2019-10-{15 + i:02d}": f"{i + 1:02d}" for i in range(15)}
 
 
@@ -284,12 +280,18 @@ def wetland_path(date_str: str) -> Path | None:
     return p if p.exists() else None
 
 
-HEATWAVE_DATES = [f"2019-10-{d:02d}" for d in range(15, 31)]
-
-
 def heatwave_path(date_str: str) -> Path | None:
     p = HEATWAVE_DIR / f"heatwave_risk_{date_str}T12.png"
     return p if p.exists() else None
+
+
+FIRE_CANDIDATES = [f"2019-10-{d:02d}" for d in range(20, 31)]
+WETLAND_CANDIDATES = [f"2019-10-{d:02d}" for d in range(15, 30)]
+HEATWAVE_CANDIDATES = [f"2019-10-{d:02d}" for d in range(15, 31)]
+
+FIRE_DATES = [d for d in FIRE_CANDIDATES if fire_path(d)]
+WETLAND_DATES = [d for d in WETLAND_CANDIDATES if wetland_path(d)]
+HEATWAVE_DATES = [d for d in HEATWAVE_CANDIDATES if heatwave_path(d)]
 
 
 _TODAY = datetime.utcnow()
@@ -308,9 +310,36 @@ def s2s_wl_path(date_str: str) -> Path | None:
     return p if p.exists() else None
 
 
-def s2s_wf_path(date_str: str) -> Path | None:
-    p = S2S_WF_DIR / f"s2s_wildfire_{date_str}.png"
-    return p if p.exists() else None
+def s2s_wf_path(date_str: str, lead: str = "week1") -> Path | None:
+    p = S2S_WF_DIR / f"s2s_wildfire_{date_str}_{lead}.png"
+    if p.exists():
+        return p
+    p_legacy = S2S_WF_DIR / f"s2s_wildfire_{date_str}.png"
+    return p_legacy if p_legacy.exists() else None
+
+
+S2S_WF_LEADS: dict[str, str] = {
+    "Week 1 (Days 1–7)": "week1",
+    "Week 2 (Days 8–14)": "week2",
+    "Month 1 (Days 1–30)": "month1",
+    "Month 2 (Days 31–60)": "month2",
+    "Month 3 (Days 61–90)": "month3",
+}
+
+
+def _discover_s2s_inits(directory: Path, prefix: str) -> list[str]:
+    inits: set[str] = set()
+    for f in directory.glob(f"{prefix}_*.png"):
+        rest = f.stem[len(prefix) + 1 :]
+        date_part = rest.split("_")[0]
+        if len(date_part) == 10 and date_part[4] == "-" and date_part[7] == "-":
+            inits.add(date_part)
+    return sorted(inits, reverse=True)
+
+
+S2S_HW_INIT_DATES = _discover_s2s_inits(S2S_HW_DIR, "s2s_heatwave")
+S2S_WL_INIT_DATES = _discover_s2s_inits(S2S_WL_DIR, "s2s_wetland")
+S2S_WF_INIT_DATES = _discover_s2s_inits(S2S_WF_DIR, "s2s_wildfire")
 
 
 def show_image_or_warning(path: Path | None, label: str):
@@ -322,6 +351,29 @@ def show_image_or_warning(path: Path | None, label: str):
             "Ensure the correct `images/` sub-folder is populated.",
             icon=None,
         )
+
+
+def show_s2s_forecast(
+    *,
+    key_prefix: str,
+    init_dates: list[str],
+    path_fn,
+    folder: str,
+    filename_pattern: str,
+):
+    if not init_dates:
+        st.info(
+            f"No S2S forecast images are loaded yet. Add PNG files to "
+            f"`{folder}` named `{filename_pattern}`. "
+            "Only dates with available maps appear in the selector."
+        )
+        return
+    selected = date_selector(
+        f"{key_prefix}_date",
+        init_dates,
+        label="Initialisation date",
+    )
+    show_image_or_warning(path_fn(selected), selected)
 
 
 def date_selector(key: str, dates: list[str], label: str = "Select date") -> str:
@@ -355,19 +407,19 @@ def legend_chips(chips: list[tuple[str, str]]):
 # ──────────────────────────────────────────────────────────────────────────────
 # HEADER
 # ──────────────────────────────────────────────────────────────────────────────
-header_logos, header_text = st.columns([1, 4], gap="medium")
+header_logos, header_text = st.columns([3, 2], gap="large")
 
 with header_logos:
     if LOGO_PATH.exists():
-        st.image(str(LOGO_PATH), width=180)
+        st.image(str(LOGO_PATH), width=420)
     else:
         st.caption("CSIR logo not found")
     if NICIS_CHPC_LOGO_PATH.exists():
-        st.image(str(NICIS_CHPC_LOGO_PATH), width=180)
+        st.image(str(NICIS_CHPC_LOGO_PATH), width=420)
     else:
         st.caption("NICIS/CHPC logo not found")
     if LIMPOPO_LOGO_PATH.exists():
-        st.image(str(LIMPOPO_LOGO_PATH), width=180)
+        st.image(str(LIMPOPO_LOGO_PATH), width=420)
     else:
         st.caption("Limpopo logo not found")
 
@@ -417,8 +469,11 @@ with tab_cs:
 
     if "Fire Risk" in layer:
         with col_map:
-            selected = date_selector("fire_date", FIRE_DATES)
-            show_image_or_warning(fire_path(selected), selected)
+            if FIRE_DATES:
+                selected = date_selector("fire_date", FIRE_DATES)
+                show_image_or_warning(fire_path(selected), selected)
+            else:
+                st.info("No fire risk maps found in `images/case_study/fire/`.")
         with col_info:
             info_card(
                 "Fire Risk",
@@ -438,8 +493,11 @@ with tab_cs:
 
     elif "Wetland" in layer:
         with col_map:
-            selected = date_selector("wetland_date", WETLAND_DATES)
-            show_image_or_warning(wetland_path(selected), selected)
+            if WETLAND_DATES:
+                selected = date_selector("wetland_date", WETLAND_DATES)
+                show_image_or_warning(wetland_path(selected), selected)
+            else:
+                st.info("No wetland maps found in `images/case_study/wetland/`.")
         with col_info:
             info_card(
                 "Wetland Degradation Risk",
@@ -458,8 +516,11 @@ with tab_cs:
 
     else:
         with col_map:
-            selected = date_selector("hw_date", HEATWAVE_DATES)
-            show_image_or_warning(heatwave_path(selected), selected)
+            if HEATWAVE_DATES:
+                selected = date_selector("hw_date", HEATWAVE_DATES)
+                show_image_or_warning(heatwave_path(selected), selected)
+            else:
+                st.info("No heatwave maps found in `images/case_study/heatwave/`.")
         with col_info:
             info_card(
                 "Heatwave Risk",
@@ -491,8 +552,13 @@ with tab_hw:
     )
     col_map2, col_info2 = st.columns([3, 1], gap="medium")
     with col_map2:
-        selected_hw = date_selector("s2s_hw_date", S2S_DATES, label="Initialisation date")
-        show_image_or_warning(s2s_hw_path(selected_hw), selected_hw)
+        show_s2s_forecast(
+            key_prefix="s2s_hw",
+            init_dates=S2S_HW_INIT_DATES,
+            path_fn=s2s_hw_path,
+            folder="images/forecasts/heatwave/",
+            filename_pattern="s2s_heatwave_YYYY-MM-DD.png",
+        )
     with col_info2:
         info_card(
             "S2S Heatwave Forecast",
@@ -525,8 +591,13 @@ with tab_wl:
     )
     col_map3, col_info3 = st.columns([3, 1], gap="medium")
     with col_map3:
-        selected_wl = date_selector("s2s_wl_date", S2S_DATES, label="Initialisation date")
-        show_image_or_warning(s2s_wl_path(selected_wl), selected_wl)
+        show_s2s_forecast(
+            key_prefix="s2s_wl",
+            init_dates=S2S_WL_INIT_DATES,
+            path_fn=s2s_wl_path,
+            folder="images/forecasts/wetland/",
+            filename_pattern="s2s_wetland_YYYY-MM-DD.png",
+        )
     with col_info3:
         info_card(
             "S2S Wetland Forecast",
@@ -553,32 +624,55 @@ with tab_wf:
     )
     st.markdown(
         '<p class="section-meta">'
-        "Sub-seasonal to seasonal fire weather projections · Updated operationally · "
-        "Select an initialisation date below"
+        "Sub-seasonal to seasonal fire occurrence probability · Updated operationally · "
+        "Select initialisation date and forecast lead below"
         "</p>",
         unsafe_allow_html=True,
     )
     col_map4, col_info4 = st.columns([3, 1], gap="medium")
     with col_map4:
-        selected_wf = date_selector("s2s_wf_date", S2S_DATES, label="Initialisation date")
-        show_image_or_warning(s2s_wf_path(selected_wf), selected_wf)
+        if not S2S_WF_INIT_DATES:
+            st.info(
+                "No S2S wildfire forecast images are loaded yet. Add PNG files to "
+                "`images/forecasts/wildfire/` named "
+                "`s2s_wildfire_YYYY-MM-DD_{lead}.png` "
+                "(leads: week1, week2, month1, month2, month3)."
+            )
+        else:
+            selected_wf = date_selector(
+                "s2s_wf_date",
+                S2S_WF_INIT_DATES,
+                label="Initialisation date",
+            )
+            lead_label = st.selectbox(
+                "Forecast lead",
+                options=list(S2S_WF_LEADS.keys()),
+                key="s2s_wf_lead",
+            )
+            lead_key = S2S_WF_LEADS[lead_label]
+            show_image_or_warning(
+                s2s_wf_path(selected_wf, lead_key),
+                f"{selected_wf} · {lead_label}",
+            )
     with col_info4:
         info_card(
             "S2S Wildfire Risk Forecast",
-            "Probabilistic Fire Weather Index (FWI) forecasts at S2S lead "
-            "times. Ensemble percentile exceedance probabilities are mapped "
-            "across southern Africa (FWI scale 0 – 300).",
+            "Ensemble-based fire occurrence probability maps for the Limpopo "
+            "region and surrounds. Shows P(fire on any day in period) at "
+            "sub-weekly to seasonal lead times from ECMWF S2S output "
+            "(3 ensemble members).",
         )
         legend_chips([
-            ("#fff5e0", "Low  (FWI < 10)"),
-            ("#ffa94d", "Moderate  (10 – 25)"),
-            ("#e03131", "High  (25 – 50)"),
-            ("#2d0a0a", "Extreme  (> 50)"),
+            ("#ffffff", "No risk  (0–5 %)"),
+            ("#b2f2bb", "Low  (5–25 %)"),
+            ("#ffd43b", "Moderate  (25–40 %)"),
+            ("#f76707", "High  (40–70 %)"),
+            ("#e03131", "Very high  (70–100 %)"),
         ])
         st.markdown("")
-        st.caption("Files: `s2s_wildfire_YYYY-MM-DD.png`")
-        st.caption("Frequency: weekly initialisation  ·  Lead: 2 wk – 3 mo")
-        st.caption("Source: ECMWF S2S database · JRA-3Q climatology")
+        st.caption("Files: `s2s_wildfire_YYYY-MM-DD_{lead}.png`")
+        st.caption("Leads: week1, week2, month1, month2, month3")
+        st.caption("Source: ECMWF S2S database · 3-member ensemble")
 
 with st.sidebar:
     st.markdown("Environmental and Climate Risk Mapping")
