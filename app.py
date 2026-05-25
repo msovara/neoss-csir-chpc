@@ -407,19 +407,19 @@ def legend_chips(chips: list[tuple[str, str]]):
 # ──────────────────────────────────────────────────────────────────────────────
 # HEADER
 # ──────────────────────────────────────────────────────────────────────────────
-header_logos, header_text = st.columns([3, 2], gap="large")
+header_logos, header_text = st.columns([2, 3], gap="medium")
 
 with header_logos:
     if LOGO_PATH.exists():
-        st.image(str(LOGO_PATH), width=420)
+        st.image(str(LOGO_PATH), width=240)
     else:
         st.caption("CSIR logo not found")
     if NICIS_CHPC_LOGO_PATH.exists():
-        st.image(str(NICIS_CHPC_LOGO_PATH), width=420)
+        st.image(str(NICIS_CHPC_LOGO_PATH), width=240)
     else:
         st.caption("NICIS/CHPC logo not found")
     if LIMPOPO_LOGO_PATH.exists():
-        st.image(str(LIMPOPO_LOGO_PATH), width=420)
+        st.image(str(LIMPOPO_LOGO_PATH), width=240)
     else:
         st.caption("Limpopo logo not found")
 
