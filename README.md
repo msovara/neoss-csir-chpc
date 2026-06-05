@@ -65,6 +65,4 @@ streamlit run app.py
 
 ---
 
-## REPOSITORY
 
-**URL:** [https://github.com/msovara/neoss-csir-chpc](https://github.com/msovara/neoss-csir-chpc)
