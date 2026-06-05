@@ -4,8 +4,10 @@ NEOSS Climate Risk — Interactive Risk Mapping Tool
 Tabs:
   1. Case Study (Oct 2019 heatwave & wildfire event)
        - Fire Risk
-       - Wetland Degradation Risk
+       - Wetland Risk (EO–AI hybrid)
+       - Wetland WDI (NWP)
        - Heatwave Risk
+       - Fire Weather Index (NWP matrix)
   2. S2S Heatwave Forecast     (date-driven, real-time)
   3. S2S Wetland Forecast      (date-driven, real-time)
   4. S2S Wildfire Risk Forecast (date-driven, real-time)
@@ -246,7 +248,10 @@ LIMPOPO_LOGO_PATH = BASE_DIR / "assets" / "limpopo_ledet_logo.png"
 
 FIRE_DIR = BASE_DIR / "images" / "case_study" / "fire"
 WETLAND_DIR = BASE_DIR / "images" / "case_study" / "wetland"
+WETLAND_NWP_DIR = BASE_DIR / "images" / "case_study" / "wetland_nwp"
 HEATWAVE_DIR = BASE_DIR / "images" / "case_study" / "heatwave"
+FWI_DIR = BASE_DIR / "images" / "case_study" / "fwi"
+FWI_MATRIX_PATH = FWI_DIR / "fwi_nwp_matrix.png"
 
 S2S_HW_DIR = BASE_DIR / "images" / "forecasts" / "heatwave"
 S2S_WL_DIR = BASE_DIR / "images" / "forecasts" / "wetland"
@@ -269,14 +274,13 @@ def fire_path(date_str: str) -> Path | None:
     return p if p.exists() else None
 
 
-_WETLAND_NN = {f"2019-10-{15 + i:02d}": f"{i + 1:02d}" for i in range(15)}
-
-
 def wetland_path(date_str: str) -> Path | None:
-    nn = _WETLAND_NN.get(date_str)
-    if nn is None:
-        return None
-    p = WETLAND_DIR / f"wetland_risk_map_{nn}_{date_str}.png"
+    matches = sorted(WETLAND_DIR.glob(f"wetland_risk_map_*_{date_str}.png"))
+    return matches[0] if matches else None
+
+
+def wetland_nwp_path(date_str: str) -> Path | None:
+    p = WETLAND_NWP_DIR / f"wdi_wetland_nwp_{date_str}.png"
     return p if p.exists() else None
 
 
@@ -285,13 +289,12 @@ def heatwave_path(date_str: str) -> Path | None:
     return p if p.exists() else None
 
 
-FIRE_CANDIDATES = [f"2019-10-{d:02d}" for d in range(20, 31)]
-WETLAND_CANDIDATES = [f"2019-10-{d:02d}" for d in range(15, 30)]
-HEATWAVE_CANDIDATES = [f"2019-10-{d:02d}" for d in range(15, 31)]
+CASE_STUDY_CANDIDATES = [f"2019-10-{d:02d}" for d in range(15, 31)]
 
-FIRE_DATES = [d for d in FIRE_CANDIDATES if fire_path(d)]
-WETLAND_DATES = [d for d in WETLAND_CANDIDATES if wetland_path(d)]
-HEATWAVE_DATES = [d for d in HEATWAVE_CANDIDATES if heatwave_path(d)]
+FIRE_DATES = [d for d in CASE_STUDY_CANDIDATES if fire_path(d)]
+WETLAND_DATES = [d for d in CASE_STUDY_CANDIDATES if wetland_path(d)]
+WETLAND_NWP_DATES = [d for d in CASE_STUDY_CANDIDATES if wetland_nwp_path(d)]
+HEATWAVE_DATES = [d for d in CASE_STUDY_CANDIDATES if heatwave_path(d)]
 
 
 _TODAY = datetime.utcnow()
@@ -459,7 +462,13 @@ with tab_cs:
 
     layer = st.radio(
         "Risk layer",
-        options=["Fire Risk", "Wetland Degradation Risk", "Heatwave Risk"],
+        options=[
+            "Fire Risk",
+            "Wetland Risk (EO–AI hybrid)",
+            "Wetland WDI (NWP)",
+            "Heatwave Risk",
+            "Fire Weather Index (NWP)",
+        ],
         horizontal=True,
         key="cs_layer",
     )
@@ -489,21 +498,22 @@ with tab_cs:
             ])
             st.markdown("")
             st.caption("Files: `fire_risk_YYYY-MM-DDT12.png`")
-            st.caption("Period: 20 – 30 October 2019  ·  12:00 UTC")
+            st.caption("Period: 15 – 30 October 2019  ·  12:00 UTC")
 
-    elif "Wetland" in layer:
+    elif layer.startswith("Wetland Risk"):
         with col_map:
             if WETLAND_DATES:
                 selected = date_selector("wetland_date", WETLAND_DATES)
                 show_image_or_warning(wetland_path(selected), selected)
             else:
-                st.info("No wetland maps found in `images/case_study/wetland/`.")
+                st.info("No hybrid wetland maps found in `images/case_study/wetland/`.")
         with col_info:
             info_card(
-                "Wetland Degradation Risk",
-                "Composite wetland degradation risk maps for the Nylsvley region. "
-                "Integrates soil moisture, vegetation stress, and inundation "
-                "indicators from WRF model output.",
+                "Wetland Risk (EO–AI hybrid)",
+                "EO- and AI-enhanced wetland degradation risk maps for selected "
+                "Limpopo wetlands (Baleni, Khurini, Nylsvley, Makuleke, Sekhukhune). "
+                "Combines WRF-based WDI with CNN residual correction from MODIS "
+                "and Sentinel-2 indicators.",
             )
             legend_chips([
                 ("#1c6ef5", "Water surplus"),
@@ -512,7 +522,53 @@ with tab_cs:
             ])
             st.markdown("")
             st.caption("Files: `wetland_risk_map_NN_YYYY-MM-DD.png`")
-            st.caption("Period: 15 – 29 October 2019")
+            st.caption("Period: 15 – 30 October 2019")
+
+    elif layer.startswith("Wetland WDI"):
+        with col_map:
+            if WETLAND_NWP_DATES:
+                selected = date_selector("wetland_nwp_date", WETLAND_NWP_DATES)
+                show_image_or_warning(wetland_nwp_path(selected), selected)
+            else:
+                st.info("No NWP WDI maps found in `images/case_study/wetland_nwp/`.")
+        with col_info:
+            info_card(
+                "Wetland WDI (NWP)",
+                "WRF-based Wetland Degradation Index (WDI) from model output "
+                "variables: climatic water balance, soil moisture, temperature, "
+                "wind, and relative humidity (He et al., 2022 formulation).",
+            )
+            legend_chips([
+                ("#1c6ef5", "Surplus  (WDI > 0)"),
+                ("#adb5bd", "Near normal"),
+                ("#c0392b", "Deficit  (WDI < 0)"),
+            ])
+            st.markdown("")
+            st.caption("Files: `wdi_wetland_nwp_YYYY-MM-DD.png`")
+            st.caption("Period: 15 – 30 October 2019")
+
+    elif "Fire Weather" in layer:
+        with col_map:
+            if FWI_MATRIX_PATH.exists():
+                st.image(str(FWI_MATRIX_PATH), use_container_width=True)
+            else:
+                st.info("No FWI matrix found in `images/case_study/fwi/`.")
+        with col_info:
+            info_card(
+                "Fire Weather Index (NWP)",
+                "Canadian FWI components (FFMC, DMC, DC, ISI, BUI, FWI) derived "
+                "from WRF surface meteorology at daily noon for the case-study "
+                "period, shown as a multi-panel summary matrix.",
+            )
+            legend_chips([
+                ("#fff5e0", "Low"),
+                ("#ffa94d", "Moderate"),
+                ("#e03131", "High"),
+                ("#2d0a0a", "Extreme"),
+            ])
+            st.markdown("")
+            st.caption("File: `fwi_nwp_matrix.png`")
+            st.caption("Period: 15 – 30 October 2019  ·  NWP baseline")
 
     else:
         with col_map:
