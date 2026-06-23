@@ -285,8 +285,11 @@ def wetland_nwp_path(date_str: str) -> Path | None:
 
 
 def heatwave_path(date_str: str) -> Path | None:
-    p = HEATWAVE_DIR / f"heatwave_risk_{date_str}T12.png"
-    return p if p.exists() else None
+    cnn = HEATWAVE_DIR / f"heatwave_risk_CNN_{date_str}.png"
+    if cnn.exists():
+        return cnn
+    legacy = HEATWAVE_DIR / f"heatwave_risk_{date_str}T12.png"
+    return legacy if legacy.exists() else None
 
 
 CASE_STUDY_CANDIDATES = [f"2019-10-{d:02d}" for d in range(15, 31)]
@@ -579,10 +582,10 @@ with tab_cs:
                 st.info("No heatwave maps found in `images/case_study/heatwave/`.")
         with col_info:
             info_card(
-                "Heatwave Risk",
-                "Daily heatwave risk intensity maps showing temperature anomaly "
-                "and exceedance thresholds during the "
-                "October 2019 extreme heat event.",
+                "Heatwave Risk (EO–AI)",
+                "Daily heatwave risk intensity maps from a convolutional neural "
+                "network trained on ERA5 temperature anomalies and exceedance "
+                "thresholds during the October 2019 extreme heat event.",
             )
             legend_chips([
                 ("#74c0fc", "Below avg"),
@@ -591,8 +594,8 @@ with tab_cs:
                 ("#9c36b5", "Extreme"),
             ])
             st.markdown("")
-            st.caption("Files: `heatwave_risk_YYYY-MM-DDT12.png`")
-            st.caption("Period: 15 – 30 October 2019  ·  12:00 UTC")
+            st.caption("Files: `heatwave_risk_CNN_YYYY-MM-DD.png`")
+            st.caption("Period: 15 – 30 October 2019  ·  EO–AI CNN")
 
 with tab_hw:
     st.markdown(

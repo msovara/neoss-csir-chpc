@@ -1,4 +1,4 @@
-# Streamlit App — Methods Report
+﻿# Streamlit App ΓÇö Methods Report
 
 **Risk Mapping Tool for Climate and Environmental Risks**
 
@@ -61,9 +61,9 @@ Three helper functions resolve file paths for different types of imagery:
 
 | Tab | Content | Date Range |
 |-----|---------|------------|
-| Nylsvley WDI | Wetland Degradation Index for Nylsvley region | 15–30 Oct 2019 (16 dates) |
-| Exceedance Maps | Regional exceedance events (red dots) | 15–23 Oct 2019 (8–9 dates) |
-| Fire Weather Index | FWI baseline maps for Southern Africa | 15–30 Oct 2019 (16 dates) |
+| Nylsvley WDI | Wetland Degradation Index for Nylsvley region | 15ΓÇô30 Oct 2019 (16 dates) |
+| Exceedance Maps | Regional exceedance events (red dots) | 15ΓÇô23 Oct 2019 (8ΓÇô9 dates) |
+| Fire Weather Index | FWI baseline maps for Southern Africa | 15ΓÇô30 Oct 2019 (16 dates) |
 
 ### 4.2 Interaction Flow
 
@@ -102,9 +102,9 @@ streamlit run app.py
 
 | Dataset | Description | Spatial Extent |
 |---------|-------------|-----------------|
-| WDI | Wetland Degradation Index (WRF model output) | Nylsvley region (~28.65–28.75°E, ~24.58–24.72°S) |
-| Exceedance | Threshold exceedance events | Southern Africa (~25–33°E, ~21–27°S) |
-| FWI | Fire Weather Index (baseline) | Southern Africa (~26–33°E, ~22–27°S) |
+| WDI | Wetland Degradation Index (WRF model output) | Nylsvley region (~28.65ΓÇô28.75┬░E, ~24.58ΓÇô24.72┬░S) |
+| Exceedance | Threshold exceedance events | Southern Africa (~25ΓÇô33┬░E, ~21ΓÇô27┬░S) |
+| FWI | Fire Weather Index (baseline) | Southern Africa (~26ΓÇô33┬░E, ~22ΓÇô27┬░S) |
 
 ---
 
@@ -121,15 +121,15 @@ streamlit run app.py
 
 ```
 neoss-csir-chpc/
-├── app.py                 # Main app entry point
-├── requirements.txt       # Dependencies
-├── .streamlit/
-│   └── config.toml       # Theme and server config
-├── images/               # Pre-generated imagery
-│   ├── Nylsvley_WDIwrf_*.png
-│   ├── exceedance_*.png
-│   └── FWI_baseline_*.png
-└── README.md
+Γö£ΓöÇΓöÇ app.py                 # Main app entry point
+Γö£ΓöÇΓöÇ requirements.txt       # Dependencies
+Γö£ΓöÇΓöÇ .streamlit/
+Γöé   ΓööΓöÇΓöÇ config.toml       # Theme and server config
+Γö£ΓöÇΓöÇ images/               # Pre-generated imagery
+Γöé   Γö£ΓöÇΓöÇ Nylsvley_WDIwrf_*.png
+Γöé   Γö£ΓöÇΓöÇ exceedance_*.png
+Γöé   ΓööΓöÇΓöÇ FWI_baseline_*.png
+ΓööΓöÇΓöÇ README.md
 ```
 
 ---

@@ -2,7 +2,7 @@
 
 **Repository:** [github.com/msovara/neoss-csir-chpc](https://github.com/msovara/neoss-csir-chpc)  
 **Live app:** [neoss-csir-chpc-apzmxmfm6s37cw5psdb6bn.streamlit.app](https://neoss-csir-chpc-apzmxmfm6s37cw5psdb6bn.streamlit.app)  
-**Report date:** 22 May 2026
+**Report date:** June 2026 (updated)
 
 ---
 
@@ -35,7 +35,7 @@ The app evolved through three stages:
 
 **Current tab structure:**
 
-1. **Case Study — Oct 2019** — radio selector for Fire Risk, Wetland Degradation Risk, and Heatwave Risk
+1. **Case Study — Oct 2019** — Fire Risk, Wetland (EO–AI), Wetland WDI (NWP), Heatwave Risk (EO–AI CNN), Fire Weather Index
 2. **S2S Heatwave Forecast** — weekly initialisation dates (rolling 12-week window)
 3. **S2S Wetland Forecast** — same date logic
 4. **S2S Wildfire Forecast** — initialisation date + forecast lead (week 1/2, month 1/2/3)
@@ -49,7 +49,7 @@ Risk maps are organised under a consistent folder structure:
 ```
 images/case_study/fire/       fire_risk_YYYY-MM-DDT12.png
 images/case_study/wetland/    wetland_risk_map_NN_YYYY-MM-DD.png
-images/case_study/heatwave/   heatwave_risk_YYYY-MM-DDT12.png
+images/case_study/heatwave/   heatwave_risk_CNN_YYYY-MM-DD.png (preferred); heatwave_risk_YYYY-MM-DDT12.png (legacy)
 images/forecasts/heatwave/    s2s_heatwave_YYYY-MM-DD.png
 images/forecasts/wetland/     s2s_wetland_YYYY-MM-DD.png
 images/forecasts/wildfire/    s2s_wildfire_YYYY-MM-DD_{lead}.png
@@ -61,7 +61,7 @@ images/forecasts/wildfire/    s2s_wildfire_YYYY-MM-DD_{lead}.png
 |-------|-------------|---------------|
 | Fire | 11 | 20–30 Oct 2019 |
 | Wetland | 15 | 15–29 Oct 2019 |
-| Heatwave | 8 | 15–21, 23 Oct (gaps: 22, 24–30) |
+| Heatwave | 16 | 15–30 Oct 2019 (EO–AI CNN); legacy T12 maps retained where present |
 | S2S heatwave / wetland | 0 | Folders ready — awaiting PNGs |
 | S2S wildfire | 5 | Initialisation 15 May 2026 — see Section 4 |
 
